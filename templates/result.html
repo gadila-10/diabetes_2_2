@@ -1,1 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diabetes Prediction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
 
+<body>
+    <h1>Prediction Result</h1>
+    <p>Result: {{ result }}</p>
+    <p>Diet Recommendation: {{ diet }}</p>
+    <p>Doctor Consultation: {{ consultation }}</p>
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
