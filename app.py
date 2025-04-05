@@ -1,41 +1,48 @@
-from flask import Flask, render_template, request
-import joblib
+from flask import Flask, render_template, request, redirect, url_for, session
 import numpy as np
+import pickle
 
 app = Flask(__name__)
-
-# Load trained model and scaler
-model = joblib.load("diabetes_model.pkl")
-scaler = joblib.load("scaler.pkl")
+app.secret_key = 'secret'
+model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # Welcome page
+    return render_template('gender.html')
 
-@app.route('/predict_form')
-def predict_form():
-    return render_template('predict_form.html')  # Form page
+@app.route('/select_gender', methods=['POST'])
+def select_gender():
+    gender = request.form['gender']
+    session['gender'] = gender
+    return redirect(url_for('input_form'))
+
+@app.route('/input_form')
+def input_form():
+    gender = session.get('gender', 'Male')
+    return render_template('input_form.html', gender=gender)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # Get form values
-        features = [float(request.form[feature]) for feature in ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']]
-        
-        # Preprocess input
-        features_scaled = scaler.transform([features])
-        
-        # Make prediction
-        prediction = model.predict(features_scaled)[0]
-        result = "Diabetic" if prediction == 1 else "Not Diabetic"
-        
-        # Provide recommendations
-        diet = "Follow a balanced low-carb diet with high fiber." if prediction == 1 else "Maintain a healthy diet to prevent diabetes."
-        doctor = "Consult a doctor for further evaluation." if prediction == 1 else "Regular health check-ups are recommended."
-        
-        return render_template('result.html', result=result, diet=diet, doctor=doctor)
-    except Exception as e:
-        return f"Error: {e}"  # Handle errors gracefully
+    features = [float(x) for x in request.form.values()]
+    prediction = model.predict([features])[0]
+    result = "Diabetic" if prediction == 1 else "Not Diabetic"
+
+    diet = {
+        "Diabetic": "Avoid sugar, eat high-fiber food like whole grains, legumes, vegetables.",
+        "Not Diabetic": "Maintain a balanced diet rich in vegetables, fruits, and lean protein."
+    }
+
+    doctor = {
+        "Diabetic": "Consult a diabetologist or endocrinologist as soon as possible.",
+        "Not Diabetic": "No need for doctor consultation, but maintain healthy habits."
+    }
+
+    return render_template(
+        'result.html',
+        prediction=result,
+        diet_reco=diet[result],
+        doctor_reco=doctor[result]
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
