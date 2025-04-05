@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Input Health Data</title></head>
+<body>
+    <h2>Enter Health Details ({{ gender }})</h2>
+    <form action="/predict" method="post">
+        <label>Pregnancies (0-17):</label><input type="number" name="Pregnancies" step="1" required><br>
+        <label>Glucose ({{ '70-140' if gender == 'Male' else '65-135' }}):</label><input type="number" name="Glucose" required><br>
+        <label>Blood Pressure ({{ '80-130' if gender == 'Male' else '70-120' }}):</label><input type="number" name="BloodPressure" required><br>
+        <label>Skin Thickness (10-99):</label><input type="number" name="SkinThickness" required><br>
+        <label>Insulin (15-276):</label><input type="number" name="Insulin" required><br>
+        <label>BMI ({{ '18.5-24.9' if gender == 'Male' else '18-24.5' }}):</label><input type="number" name="BMI" step="0.1" required><br>
+        <label>Diabetes Pedigree Function (0.1-2.5):</label><input type="number" name="DiabetesPedigreeFunction" step="0.01" required><br>
+        <label>Age (10-100):</label><input type="number" name="Age" required><br>
+        <button type="submit">Predict</button>
+    </form>
+</body>
+</html>
