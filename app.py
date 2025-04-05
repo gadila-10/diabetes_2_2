@@ -38,7 +38,7 @@ def predict():
     }
 
     return render_template(
-        'result.html',
+        'result1.html',
         prediction=result,
         diet_reco=diet[result],
         doctor_reco=doctor[result]
