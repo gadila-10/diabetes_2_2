@@ -4,7 +4,7 @@ import numpy as np
 
 app = Flask(__name__)
 
-# Load the trained model
+# Load the trained ML model
 model = pickle.load(open('diabetes_model.pkl', 'rb'))
 
 @app.route('/')
@@ -17,7 +17,7 @@ def form():
         gender = request.form.get('gender', 'unknown')
         return render_template('form.html', gender=gender)
     else:
-        return render_template('index.html')  # redirect if accessed directly
+        return render_template('index.html')
 
 @app.route('/result', methods=['POST'])
 def result():
@@ -48,7 +48,6 @@ def result():
 
     return render_template("result.html", result=message, diet=diet, doctors=advice)
 
-# Optional: handle 404 errors
 @app.errorhandler(404)
 def page_not_found(e):
     return "Page not found. Go back to the home page.", 404
