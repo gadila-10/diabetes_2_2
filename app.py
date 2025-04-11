@@ -15,7 +15,7 @@ def index():
 def form():
     if request.method == 'POST':
         gender = request.form.get('gender', 'unknown')
-        return render_template('form.html', gender=gender)
+        return render_template('predict.html', gender=gender)
     else:
         return render_template('index.html')
 
